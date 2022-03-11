@@ -2,7 +2,19 @@
 
 A demo of some favorite Flutter libraries working together
 
+>Note: To make this code work and retrieve data from the API you will need to add a ".env" file to the root that looks something like this ... 
+>
+>      RAPIDAPIKEY="a59228f25bmsh.......n185850d3e6a7"
+>      GAMEAPIKEY="074e582b9cba4......dab98fc6d65"
+>
+>* Where the first is your (free) api key from https://rapidapi.com/ 
+>* And the second is your (free) api key from https://rawg.io/
+>* And I could probably include the API keys I have (as they are not "secret") but that is not good practice for source control or GitHub as a whole ... but let me know if this is a huge roadblock for you
+> 
+
 The idea for this app came from a starter discussion in the fledgling West Michigan Flutter Discord discussion group (https://discord.gg/gvu8HFFQ)
+
+![Sample Screen](/readme/sample_screen.png)
 
 The idea was to create a sample app using some of your favorite Flutter packages to show how they work together.
 
