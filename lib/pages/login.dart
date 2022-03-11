@@ -2,29 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:jobstate/services/authnotifier.dart';
-import 'package:jobstate/services/textcontrollernotifier.dart';
-
-// class Login extends ConsumerWidget {
-//   const Login({Key? key}) : super(key: key);
-
-//   @override
-//   Widget build(BuildContext context, WidgetRef ref) {
-//     return Column(
-//       children: [
-//         const Text("Login"),
-//         ElevatedButton(
-//             onPressed: () {
-//               ref
-//                   .read(authStateProvider.notifier)
-//                   .signIn("bruce@abernethy.com", "P@ssw0rd");
-//               context.go('/');
-//             },
-//             child: const Text("Login"))
-//       ],
-//     );
-//   }
-// }
-
 import 'package:lottie/lottie.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
