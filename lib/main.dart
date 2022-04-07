@@ -1,16 +1,13 @@
-import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:jobstate/pages/game.dart';
-import 'package:jobstate/pages/genre.dart';
-import 'package:jobstate/pages/genres.dart';
-import 'package:jobstate/pages/home.dart';
-import 'package:jobstate/pages/login.dart';
-import 'package:jobstate/pages/settings.dart';
-import 'package:jobstate/services/authnotifier.dart';
-import 'package:jobstate/services/loggerprovider.dart';
+import 'package:jobstate/core/screens/settings.dart';
+import 'package:jobstate/core/services/loggerprovider.dart';
+import 'package:jobstate/games/screens/game.dart';
+import 'package:jobstate/genres/screens/genre.dart';
+import 'package:jobstate/genres/screens/genres.dart';
+import 'package:jobstate/login/screens/login.dart';
+import 'package:jobstate/login/state/authnotifier.dart';
 
 void main() {
   GoRouter.setUrlPathStrategy(UrlPathStrategy.path);
@@ -37,12 +34,12 @@ class MyApp extends HookConsumerWidget {
         GoRoute(
           path: '/games/:gid',
           builder: (context, state) {
-            return GamePage(state.params['gid']);
+            return GamePage(state.params['gid'].toString());
           },
         ),
         GoRoute(
           path: '/login',
-          builder: (context, state) => Login(),
+          builder: (context, state) => const Login(),
         ),
         GoRoute(
           path: '/settings',
@@ -50,10 +47,10 @@ class MyApp extends HookConsumerWidget {
         ),
       ],
 
-      // redirect to the login page if the user is not logged in
+      //redirect to the login page if the user is not logged in
       redirect: (state) {
         // if the user is not logged in, they need to login
-        final loggedIn = ref.watch(authStateProvider).isLoggedIn;
+        final bool loggedIn = ref.watch(authStateProvider).isLoggedIn;
         final loggingIn = state.subloc == '/login';
         if (!loggedIn) return loggingIn ? null : '/login';
         // if the user is logged in but still on the login page, send them to
