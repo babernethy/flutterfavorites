@@ -87,7 +87,7 @@ extension TextHelper on BuildContext {
   TextStyle? get h2 {
     return isDesktop
         ? Theme.of(this).textTheme.displayMedium
-        : Theme.of(this).textTheme.displaySmall?.copyWith(fontSize: 36);
+        : Theme.of(this).textTheme.displaySmall?.copyWith(fontSize: 20);
   }
 
   TextStyle? get h3 {

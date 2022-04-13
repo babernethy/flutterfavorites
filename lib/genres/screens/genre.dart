@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:jobstate/genres/state/genrenotifier.dart';
-import 'package:jobstate/login/state/authnotifier.dart';
+import 'package:jobstate/app/extensions.dart';
+import 'package:jobstate/app/state/global_state_notifier.dart';
+import 'package:jobstate/genres/state/genre_notifier.dart';
+import 'package:jobstate/login/state/auth_notifier.dart';
 
 class GenrePage extends HookConsumerWidget {
   const GenrePage(this.gidraw, {Key? key}) : super(key: key);
@@ -11,53 +14,105 @@ class GenrePage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final genregames = ref.watch(genreGamesListProvider);
+    final genreGamesStream = ref.watch(genreGameListStreamProvider);
+    final appState = ref.watch(globalStateNotifier);
 
-    Widget _itemBuilder(BuildContext context, int index) {
-      return InkWell(
-        child: Card(
-          child: Center(
-              child: Column(children: [
-            Text(
-              genregames[index].name!,
-              style: const TextStyle(
-                fontWeight: FontWeight.w500,
-                color: Colors.orange,
-              ),
-            ),
-          ])),
-        ),
-        onTap: () {
-          ref
-              .read(gameDetailStateProvider.notifier)
-              .getGameById(genregames[index].id.toString());
-          context.push('/games/${genregames[index].id!}');
-        },
-      );
+    final scrollController = useScrollController();
+
+    scrollController.addListener(() {
+      // final triggerFetchMoreSize =
+      //     0.9 * scrollController.position.maxScrollExtent;
+
+      if (scrollController.offset >
+          scrollController.position.maxScrollExtent + 40) {
+        final middle = scrollController.position.maxScrollExtent / 2;
+        scrollController.animateTo(middle,
+            curve: Curves.linear, duration: const Duration(milliseconds: 500));
+        ref.read(globalStateNotifier.notifier).incrementPageNumber();
+
+        print('need more');
+      }
+
+      if (scrollController.offset <=
+          scrollController.position.minScrollExtent) {
+        ref.read(globalStateNotifier.notifier).decrementPageNumber();
+
+        print('need more');
+      }
+    });
+
+    Widget _streamItemBuilder(BuildContext context, int index) {
+      return genreGamesStream.when(
+          loading: () => const CircularProgressIndicator(),
+          error: (err, stack) => Text('Error: $err'),
+          data: (games) {
+            return InkWell(
+              child: Card(
+                  color: Theme.of(context).colorScheme.surface,
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        if (games[index].backgroundImage != null)
+                          Image.network(
+                            games[index].backgroundImage!,
+                            width: 100,
+                            height: 50,
+                            fit: BoxFit.fitHeight,
+                          ),
+                        Flexible(
+                            child: FittedBox(
+                                fit: BoxFit.scaleDown,
+                                child: Text(
+                                  games[index].name!,
+                                  overflow: TextOverflow.fade,
+                                  style: context.h2!.copyWith(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurface),
+                                ))),
+                      ])),
+              onTap: () {
+                ref
+                    .read(globalStateNotifier.notifier)
+                    .setGameId(games[index].id!);
+                context.push('/games/${games[index].slug!}');
+              },
+            );
+          });
     }
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(gidraw!),
-        actions: [
-          IconButton(
-              icon: const Icon(Icons.logout),
-              onPressed: () {
-                ref.watch(authStateProvider.notifier).signOut();
-              }),
-          IconButton(
-              icon: const Icon(Icons.settings),
-              onPressed: () {
-                context.push('/settings');
-              }),
-        ],
-      ),
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: ListView.builder(
-        padding: const EdgeInsets.all(5.5),
-        itemCount: genregames.length,
-        itemBuilder: _itemBuilder,
-      ),
-    );
+    return Semantics(
+        label: 'will this announce the page?',
+        child: Scaffold(
+            appBar: AppBar(
+              title: Text(
+                '${gidraw!} - page ${appState.genreGamesPageNumber}',
+              ),
+              actions: [
+                IconButton(
+                    icon: const Icon(Icons.logout),
+                    tooltip: 'Logout',
+                    onPressed: () {
+                      ref.watch(authStateProvider.notifier).signOut();
+                    }),
+                IconButton(
+                    icon: const Icon(Icons.settings),
+                    tooltip: 'Settings',
+                    onPressed: () {
+                      context.push('/settings');
+                    }),
+              ],
+            ),
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            body: genreGamesStream.when(
+              loading: () => const CircularProgressIndicator(),
+              error: (err, stack) => Text('Error: $err'),
+              data: (games) => ListView.builder(
+                controller: scrollController,
+                padding: const EdgeInsets.all(5.5),
+                itemCount: games.length,
+                itemBuilder: _streamItemBuilder, //_itemBuilder,
+              ),
+            )));
   }
 }

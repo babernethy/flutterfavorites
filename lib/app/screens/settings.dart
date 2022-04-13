@@ -2,8 +2,8 @@ import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:jobstate/core/services/constants.dart';
-import 'package:jobstate/login/state/authnotifier.dart';
+import 'package:jobstate/app/services/constants.dart';
+import 'package:jobstate/login/state/auth_notifier.dart';
 
 final appThemeNotifier = StateNotifierProvider<AppThemeNotifier, AppThemeState>(
     (ref) => AppThemeNotifier());
@@ -45,7 +45,8 @@ class ThemeSet extends AppThemeState {
             colors: myFlexSchemes[selectedIndex].dark,
             surfaceMode: FlexSurfaceMode.highScaffoldLowSurface,
             visualDensity: FlexColorScheme.comfortablePlatformDensity,
-            textTheme: GoogleFonts.ebGaramondTextTheme())
+            textTheme: GoogleFonts.ebGaramondTextTheme()
+                .apply(bodyColor: Colors.white, displayColor: Colors.white))
         .toTheme;
 
     lightTheme = FlexColorScheme.light(

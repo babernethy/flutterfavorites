@@ -21,4 +21,5 @@ class GenreAPIResult {
       });
     }
   }
+  static const fromJsonConverter = GenreAPIResult.fromJson;
 }

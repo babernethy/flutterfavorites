@@ -14,4 +14,5 @@ class Genre with _$Genre {
       @JsonKey(name: 'image_background') String? imageBackground,
       List<Game>? games}) = _Genre;
   factory Genre.fromJson(Map<String, dynamic> json) => _$GenreFromJson(json);
+  static const fromJsonConverter = _$GenreFromJson;
 }

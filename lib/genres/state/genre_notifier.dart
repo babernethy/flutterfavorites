@@ -1,7 +1,8 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:jobstate/games/models/gamapiresult.dart';
+import 'package:jobstate/app/state/global_state_notifier.dart';
+import 'package:jobstate/games/models/gamapiresult.gen.dart';
 import 'package:jobstate/games/models/game.dart';
-import 'package:jobstate/games/services/gameapi.dart';
+import 'package:jobstate/games/services/game_repo.dart';
 import 'package:jobstate/genres/models/genre.dart';
 
 final genreGamesProvider = StateProvider<String>((ref) => '');
@@ -26,24 +27,19 @@ class GenreNotifier extends StateNotifier<List<Genre>> {
   List<Genre>? _genres;
 
   Future<void> getGenres() async {
+    final api = GameRepo();
+
     if (_genres == null) {
-      final api = GameAPI();
-      _genres = await api.getGenres();
-      state = _genres!;
+      state = await api.getGenres();
     }
   }
 }
 
-final gameDetailStateProvider =
-    StateNotifierProvider<GameNotifier, GameDetail?>((ref) {
-  return GameNotifier();
+final genreGameListStreamProvider =
+    StreamProvider<List<GameDetail>>((ref) async* {
+  final appState = ref.watch(globalStateNotifier);
+  final api = GameRepo();
+  //await Future.delayed(const Duration(seconds: 5));
+  yield await api.getGamesByGenreId(
+      appState.currentGenreId.toString(), appState.genreGamesPageNumber!);
 });
-
-class GameNotifier extends StateNotifier<GameDetail?> {
-  GameNotifier() : super(null);
-
-  Future<void> getGameById(String id) async {
-    final api = GameAPI();
-    state = await api.getGameDetailById(id);
-  }
-}

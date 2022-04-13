@@ -55,6 +55,8 @@ class GameDetail {
     dominantColor = json['dominant_color'];
     descriptionRaw = json['description_raw'];
   }
+
+  static const fromJsonConverter = GameDetail.fromJson;
 }
 
 class Ratings {

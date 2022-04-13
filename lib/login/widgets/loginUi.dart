@@ -3,7 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:jobstate/login/state/authnotifier.dart';
+import 'package:jobstate/login/state/auth_notifier.dart';
 import 'package:lottie/lottie.dart';
 
 // borrowed from https://github.com/skanaujiya/Login-App

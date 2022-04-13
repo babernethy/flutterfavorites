@@ -9,8 +9,13 @@ linter:
 analyzer:
   exclude:
     - "**/*.g.dart" #to support json_serializable w/o judgement
+    - "**/*.gen.dart" #to support json_serializable w/o judgement
     - "**/*.freezed.dart" #to support freezed w/o judgement 
+    - "**/*.chopper.dart" #to support freezed w/o judgement 
+
   errors:
     invalid_annotation_target: ignore
-    invalid_assignment: ignore #problem when using json imports
+    # invalid_assignment: ignore #problem when using json imports
     argument_type_not_assignable: ignore #problem when using json imports
+    # return_of_invalid_type_from_closure: ignore
+    # return_of_invalid_type: ignore
